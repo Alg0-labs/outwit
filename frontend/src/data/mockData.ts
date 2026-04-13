@@ -165,6 +165,7 @@ export const mockBattles = [
 export const mockMarkets = [
   {
     id: 'm1',
+    source: 'polymarket',
     question: 'Will Mumbai Indians beat CSK on April 14?',
     yesPrice: 0.71,
     noPrice: 0.29,
@@ -177,6 +178,7 @@ export const mockMarkets = [
   },
   {
     id: 'm2',
+    source: 'polymarket',
     question: 'Will RCB qualify for IPL 2025 playoffs?',
     yesPrice: 0.43,
     noPrice: 0.57,
@@ -189,6 +191,7 @@ export const mockMarkets = [
   },
   {
     id: 'm3',
+    source: 'polymarket',
     question: 'Will US impose new sanctions on Iran before May 15?',
     yesPrice: 0.62,
     noPrice: 0.38,
@@ -201,6 +204,7 @@ export const mockMarkets = [
   },
   {
     id: 'm4',
+    source: 'polymarket',
     question: 'Will Iran conduct a military exercise near Strait of Hormuz in April?',
     yesPrice: 0.78,
     noPrice: 0.22,
@@ -213,6 +217,7 @@ export const mockMarkets = [
   },
   {
     id: 'm5',
+    source: 'polymarket',
     question: 'Will KKR retain their title in IPL 2025?',
     yesPrice: 0.34,
     noPrice: 0.66,
@@ -225,6 +230,7 @@ export const mockMarkets = [
   },
   {
     id: 'm6',
+    source: 'polymarket',
     question: 'Will a US-Iran diplomatic meeting occur before June 2025?',
     yesPrice: 0.29,
     noPrice: 0.71,
