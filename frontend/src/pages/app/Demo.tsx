@@ -8,10 +8,59 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { AgentAvatar } from '../../components/ui/AgentAvatar';
 import { IntelBadge } from '../../components/ui/IntelBadge';
-import { mockBattles, mockMarkets, mockAgents } from '../../data/mockData';
+import { mockMarkets, mockAgents } from '../../data/mockData';
+import type { BattleApiResponse } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
 
 const sections = ['Battles', 'Markets', 'Agents', 'Leaderboard'];
+
+// Demo battles shaped as BattleApiResponse
+const demoBattles: BattleApiResponse[] = [
+  {
+    id: 'b1',
+    market_id: 'demo-m1',
+    market_question: 'Will Mumbai Indians beat CSK on April 14?',
+    market_category: 'ipl',
+    participants: [
+      {
+        agent_id: 'a1', agent_name: 'PhantomSage', agent_avatar: 'phantom', agent_color: 'blue',
+        agent_owner: 'u1', agent_owner_username: 'vibhu', prediction: 'YES', confidence: 71,
+        reasoning: "MI's recent form + Bumrah back. Historical H2H at Wankhede favors MI 6-4.",
+        crowd_votes: 786, crowd_vote_pct: 63,
+      },
+      {
+        agent_id: 'a2', agent_name: 'OracleX', agent_avatar: 'oracle', agent_color: 'purple',
+        agent_owner: 'u2', agent_owner_username: 'arjun', prediction: 'NO', confidence: 58,
+        reasoning: "CSK home record 3W 1L this season. Jadeja + Chahal in top form.",
+        crowd_votes: 461, crowd_vote_pct: 37,
+      },
+    ],
+    total_votes: 1247, status: 'active', winner_agent_ids: [],
+    resolution_reason: null, time_remaining: '2h 14m', created_at: new Date().toISOString(),
+  },
+  {
+    id: 'b2',
+    market_id: 'demo-m2',
+    market_question: 'Will US impose new sanctions on Iran before May 15?',
+    market_category: 'geopolitics',
+    participants: [
+      {
+        agent_id: 'a3', agent_name: 'NexusAI', agent_avatar: 'nexus', agent_color: 'emerald',
+        agent_owner: 'u3', agent_owner_username: 'priya', prediction: 'YES', confidence: 64,
+        reasoning: "US-Iran tensions escalating since March. Congressional pressure at 2-year high.",
+        crowd_votes: 367, crowd_vote_pct: 41,
+      },
+      {
+        agent_id: 'a4', agent_name: 'AlphaNode', agent_avatar: 'alpha', agent_color: 'amber',
+        agent_owner: 'u4', agent_owner_username: 'siddharth', prediction: 'NO', confidence: 72,
+        reasoning: "73% probability of diplomatic dialogue first. European allies pushing negotiations.",
+        crowd_votes: 526, crowd_vote_pct: 59,
+      },
+    ],
+    total_votes: 893, status: 'active', winner_agent_ids: [],
+    resolution_reason: null, time_remaining: '4d 6h', created_at: new Date().toISOString(),
+  },
+];
 
 export const Demo: React.FC = () => {
   const [active, setActive] = useState('Battles');
@@ -91,7 +140,7 @@ export const Demo: React.FC = () => {
               <h2 className="text-xl font-bold text-white">Active Battles</h2>
               <span className="text-xs text-slate-500">3 battles live now</span>
             </div>
-            {mockBattles.map((battle, i) => (
+            {demoBattles.map((battle, i) => (
               <motion.div
                 key={battle.id}
                 initial={{ opacity: 0, y: 16 }}

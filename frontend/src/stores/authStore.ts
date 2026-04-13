@@ -7,6 +7,7 @@ interface AuthStore {
   user: UserData | null;
   agent: AgentResponse | null;
   isAuthenticated: boolean;
+  isDemoMode: boolean;      // true when logged in with demo account (no real JWT)
   isLoading: boolean;
   error: string | null;
 
@@ -26,6 +27,7 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       agent: null,
       isAuthenticated: false,
+      isDemoMode: false,
       isLoading: false,
       error: null,
 
@@ -35,7 +37,7 @@ export const useAuthStore = create<AuthStore>()(
           const data = await authApi.login({ email, password });
           tokenStore.set(data.access_token);
           tokenStore.setRefresh(data.refresh_token);
-          set({ user: data.user, isAuthenticated: true, isLoading: false });
+          set({ user: data.user, isAuthenticated: true, isDemoMode: false, isLoading: false });
           // Eagerly load agent
           try {
             const me = await authApi.me();
@@ -64,7 +66,7 @@ export const useAuthStore = create<AuthStore>()(
           const data = await authApi.verifyOtp({ email, otp });
           tokenStore.set(data.access_token);
           tokenStore.setRefresh(data.refresh_token);
-          set({ user: data.user, isAuthenticated: true, isLoading: false });
+          set({ user: data.user, isAuthenticated: true, isDemoMode: false, isLoading: false });
         } catch (e: any) {
           set({ isLoading: false, error: e.detail ?? 'Invalid OTP' });
           throw e;
@@ -103,6 +105,7 @@ export const useAuthStore = create<AuthStore>()(
               }
             : null,
           isAuthenticated: true,
+          isDemoMode: true,
           isLoading: false,
           error: null,
         });
@@ -110,7 +113,7 @@ export const useAuthStore = create<AuthStore>()(
 
       logout: () => {
         tokenStore.clear();
-        set({ user: null, agent: null, isAuthenticated: false, error: null });
+        set({ user: null, agent: null, isAuthenticated: false, isDemoMode: false, error: null });
       },
 
       setAgent: (agent) => set({ agent }),
@@ -133,6 +136,7 @@ export const useAuthStore = create<AuthStore>()(
         user: state.user,
         agent: state.agent,
         isAuthenticated: state.isAuthenticated,
+        isDemoMode: state.isDemoMode,
       }),
     }
   )

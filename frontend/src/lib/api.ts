@@ -134,6 +134,29 @@ export const marketApi = {
   get: (id: string) => api.get<MarketResponse>(`/markets/${id}`),
 };
 
+// ── Predictions ───────────────────────────────────────────────────────────────
+export const predictionApi = {
+  create: (marketId: string) =>
+    api.post<PredictionApiResponse>('/predictions', { market_id: marketId }),
+  get: (id: string) => api.get<PredictionApiResponse>(`/predictions/${id}`),
+};
+
+// ── Battles ───────────────────────────────────────────────────────────────────
+export const battleApi = {
+  list: (params?: { status?: 'active' | 'resolved'; min_participants?: number }) => {
+    const qs = new URLSearchParams();
+    if (params?.status) qs.set('status', params.status);
+    if (params?.min_participants !== undefined) qs.set('min_participants', String(params.min_participants));
+    const query = qs.toString() ? `?${qs}` : '';
+    return api.get<BattleApiResponse[]>(`/battles${query}`);
+  },
+  get: (id: string) => api.get<BattleApiResponse>(`/battles/${id}`),
+  vote: (battleId: string, agentId: string) =>
+    api.post<BattleApiResponse>(`/battles/${battleId}/vote`, { agent_id: agentId }),
+  liveFeed: (battleId: string) => api.get<LiveFeedResponse>(`/battles/${battleId}/live-feed`),
+  thoughts: (battleId: string) => api.get<AgentThought[]>(`/battles/${battleId}/thoughts`),
+};
+
 // ── Intel ────────────────────────────────────────────────────────────────────
 export const intelApi = {
   balance: () => api.get<{ intel_balance: number; agent_id: string }>('/intel/balance'),
@@ -194,6 +217,7 @@ export interface CreateAgentBody {
 export interface MarketResponse {
   id: string;
   external_id: string;
+  source: string;           // "polymarket" | "cricapi"
   question: string;
   yes_price: number;
   no_price: number;
@@ -202,6 +226,49 @@ export interface MarketResponse {
   closes_at: string;
   is_resolved: boolean;
   time_remaining: string;
+}
+
+export interface PredictionApiResponse {
+  id: string;
+  agent_id: string;
+  market_id: string;
+  market_question: string;
+  market_category: string;
+  predicted_outcome: string;   // "YES" | "NO"
+  confidence_score: number;    // 0-100
+  intel_wagered: number;
+  reasoning_text: string;
+  key_signal: string;
+  status: string;
+  created_at: string;
+}
+
+export interface BattleParticipant {
+  agent_id: string;
+  agent_name: string;
+  agent_avatar: string;
+  agent_color: string;
+  agent_owner: string;
+  agent_owner_username: string;
+  prediction: string;   // "YES" | "NO"
+  confidence: number;
+  reasoning: string;
+  crowd_votes: number;
+  crowd_vote_pct: number;
+}
+
+export interface BattleApiResponse {
+  id: string;
+  market_id: string;
+  market_question: string;
+  market_category: string;
+  participants: BattleParticipant[];
+  total_votes: number;
+  status: string;
+  winner_agent_ids: string[];
+  resolution_reason: string | null;
+  time_remaining: string;
+  created_at: string;
 }
 
 export interface Transaction {
@@ -213,10 +280,53 @@ export interface Transaction {
   created_at: string;
 }
 
+export interface LiveFeedScore {
+  inning: string;
+  runs: number;
+  wickets: number;
+  overs: string | number;
+}
+
+export interface LiveFeedNews {
+  headline: string;
+  source: string;
+  published: string;
+  url: string;
+}
+
+export interface LiveFeedResponse {
+  source: string;
+  category: string;
+  market_question: string;
+  match_score: LiveFeedScore[] | null;
+  match_status: string | null;
+  match_started: boolean;
+  match_ended: boolean;
+  venue: string;
+  toss: string;
+  news: LiveFeedNews[];
+}
+
 export interface DailyLoginResponse {
   intel_awarded: number;
   new_balance: number;
   streak: number;
   streak_complete: boolean;
   message: string;
+}
+
+export interface AgentThought {
+  id: string;
+  battle_id: string;
+  agent_id: string;
+  agent_name: string;
+  agent_color: string;
+  agent_avatar: string;
+  prediction: string;
+  confidence: number;
+  confidence_delta: number;
+  thought: string;
+  reasoning: string;
+  match_context: string;
+  created_at: string;
 }

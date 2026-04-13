@@ -19,6 +19,7 @@ function toCardMarket(m: MarketResponse) {
   const hoursLeft = (closeDate.getTime() - Date.now()) / 3_600_000;
   return {
     id: m.external_id,
+    source: m.source ?? 'polymarket',
     question: m.question,
     yesPrice: m.yes_price,
     noPrice: m.no_price,
